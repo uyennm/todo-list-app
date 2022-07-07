@@ -1,4 +1,4 @@
-import todos from '../../api/todoList'
+import todoList from '../../api/todoList'
 
 const state = () => ({
     allTodo: []
@@ -8,7 +8,7 @@ const getters = {}
 
 const actions = {
     async getAllTodos ({ commit }) {
-        const todos = await todos.getTodos()
+        const todos = await todoList.getTodos()
         commit('setTodos', todos)
     }
 }

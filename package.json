@@ -1,11 +1,13 @@
 {
-    "name": "todo-list-app",
-    "version": "1.0.0",
-    "main": "index.js",
-    "license": "MIT",
-    "private": true,
-    "workspaces": ["frontend", "backend"],
-    "scripts": {
-      "start": "node backend/index.js"
-    }
+  "name": "todo-list-app",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "start": "node backend/index.js"
   }
+}
