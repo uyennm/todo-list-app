@@ -4,8 +4,8 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "frontend",
-    "backend"
+    "todolist-frontend",
+    "todolist-backend"
   ],
   "scripts": {
     "start": "node backend/index.js"

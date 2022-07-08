@@ -1,36 +1,25 @@
 <template>
   <div class="flex flex-col items-center">
-    <p v-if="!todos.length">There are no todos yet.</p>
+    <p v-if="!todos.length">There are no done todos yet.</p>
     <ul>
       <li v-for="(todo, index) in todos" :key="index">
         <h3>{{ todo.title }}</h3>
         <p>{{ todo.description }}</p>
 
         <button @click="editTodo(todo)">Edit</button>
-        <button @click="doneTodo(todo)">Done</button>
         <button @click="removeTodo(todo)">Remove</button>
       </li>
     </ul>
 
-    <TodoItem @add-todo="addNewTodo" />
   </div>
 </template>
   
 <script>
-import TodoItem from './TodoItem.vue'
 export default {
-  components: { TodoItem },
   methods: {
-    addNewTodo(todo) {
-      this.$store.dispatch('todos/addTodo', todo)
-    },
 
     editTodo(todo) {
       this.$store.dispatch('todos/editTodo', todo)
-    },
-
-    doneTodo(todo) {
-      this.$store.dispatch('todos/doneTodo', todo)
     },
 
     removeTodo(todo) {
@@ -39,12 +28,9 @@ export default {
   },
   computed: {
     todos() {
-      return this.$store.getters['todos/todos']
+      return this.$store.getters['todos/doneTodos']
     }
   },
-  created() {
-    this.$store.dispatch('todos/getAllTodos')
-  }
 }
 
 </script>

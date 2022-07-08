@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="border-2 border-solid border-blue-400 rounded">
         <form class="new-item-form" @submit.prevent="onSubmit">
             <P>
                 <label for="title">Title:</label>
