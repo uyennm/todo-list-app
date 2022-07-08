@@ -1,7 +1,7 @@
 <template>
   <div class="todo-list">
     <p v-if="!todos.length">There are no todos yet.</p>
-    <ul v-else>
+    <ul>
       <li v-for="(todo, index) in todos" :key="index">
         <h3>{{ todo.title }}</h3>
         <p>{{ todo.description }}</p>
@@ -19,15 +19,30 @@
 import TodoItem from './TodoItem.vue'
 export default {
   components: { TodoItem },
-  data() {
-    return {
-      todos: []
-    }
-  },
   methods: {
     addNewTodo(todo) {
-      this.todos.push(todo)
+      this.$store.dispatch('todos/addTodo', todo)
+    },
+
+    // editTodo(todo) {
+    //   this.$store.todos.dispatch('editTodo', todo)
+    // },
+
+    // doneTodo(todo) {
+    //   this.$store.todos.dispatch('doneTodo', todo)
+    // },
+
+    // removeTodo(todo) {
+    //   this.$store.todos.dispatch('removeTodo', todo)
+    // }
+  },
+  computed: {
+    todos() {
+      return this.$store.getters['todos/todos']
     }
+  },
+  created() {
+    this.$store.dispatch('todos/getAllTodos')
   }
 }
 
