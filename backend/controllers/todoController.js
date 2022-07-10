@@ -1,4 +1,5 @@
-const Todo = require('./../models/todoModel');
+const db = require("./../models");
+const Todo = db.todos
 const catchAsync = require('./../utils/catchAsync');
 
 exports.getTodosOfUser = catchAsync(async (req, res, next) => {
@@ -41,7 +42,7 @@ exports.updateTodo = catchAsync(async (req, res, next) => {
         },
         {
             where: {
-                _id: req.params.id,
+                id: req.params.id,
                 user: req.body.user.username
             }
         }
@@ -62,7 +63,7 @@ exports.updateTodo = catchAsync(async (req, res, next) => {
 exports.deleteTodo = catchAsync(async (req, res, next) => {
     const todo = await Todo.destroy({
         where: {
-            _id: req.params.id
+            id: req.params.id
         }
     });
 
