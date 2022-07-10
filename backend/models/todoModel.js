@@ -1,9 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const Todo = sequelize.define('todos', {
-        user: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
+    const Todo = sequelize.define('todo', {
         title: {
             type: Sequelize.STRING,
             unique: true,
@@ -22,6 +18,10 @@ module.exports = (sequelize, Sequelize) => {
             defaultValue: false,
         }
     });
+
+    Todo.associate = (models) => {
+        Todo.belongsTo(models.User);
+    };
 
     return Todo;
 }

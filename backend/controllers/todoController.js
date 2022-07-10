@@ -1,13 +1,13 @@
 const db = require("./../models");
-const Todo = db.todos
+const Todo = db.Todo
 const catchAsync = require('./../utils/catchAsync');
 
 exports.getTodosOfUser = catchAsync(async (req, res, next) => {
     const todos = await Todo.findAll({
         where: {
-            user: req.user.username,
+            userId: req.user.id,
         }
-    } );  
+    });  
   
     res.status(200).json({
         status: 'success',
@@ -19,7 +19,7 @@ exports.getTodosOfUser = catchAsync(async (req, res, next) => {
 
 exports.createTodo = catchAsync(async (req, res, next) => {
     const newTodo = await Todo.create({
-        user: req.body.user.username,
+        userId: req.user.id,
         title: req.body.title,
         description: req.body.description,
         isDone: req.body.isDone
@@ -43,7 +43,7 @@ exports.updateTodo = catchAsync(async (req, res, next) => {
         {
             where: {
                 id: req.params.id,
-                user: req.body.user.username
+                userId: req.user.id
             }
         }
     );
@@ -63,7 +63,8 @@ exports.updateTodo = catchAsync(async (req, res, next) => {
 exports.deleteTodo = catchAsync(async (req, res, next) => {
     const todo = await Todo.destroy({
         where: {
-            id: req.params.id
+            id: req.params.id,
+            userId: req.user.id
         }
     });
 

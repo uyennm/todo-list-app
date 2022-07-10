@@ -17,10 +17,12 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.p
 
 const db = {};
 
+db.User = require("./userModel")(sequelize, Sequelize);
+db.Todo = require("./todoModel")(sequelize, Sequelize);
+
+db.Todo.associate(db);
+
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-
-db.users = require("./userModel")(sequelize, Sequelize);
-db.todos = require("./todoModel")(sequelize, Sequelize);
 
 module.exports = db;

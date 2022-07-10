@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const db = require("./../models");
-const User = db.users
+const User = db.User
 const catchAsync = require('./../utils/catchAsync');
 
 const signToken = (id) => {
@@ -11,7 +11,7 @@ const signToken = (id) => {
 };
 
 const createSendToken = (user, statusCode, res) => {
-    const token = signToken(user._id);
+    const token = signToken(user.id);
 
     const cookieOptions = {
         expires: new Date(
@@ -73,9 +73,12 @@ exports.protect = catchAsync(async (req, res, next) => {
     if (!token) {
         // req.user = 'guest';
         // return next();
+        console.log('no token');
     }
 
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    console.log(decoded)
 
     const currUser = await User.findByPk(decoded.id);
     if (!currUser) {

@@ -44,9 +44,13 @@ module.exports = (sequelize, Sequelize) => {
   User.beforeSave(async (user, options) => {
       if (user.previous('password') !== user.password) {
           user.password = await bcrypt.hash(user.password, 10);
-          user.passwordConfirm = undefined;
+          user.passwordConfirm = await bcrypt.hash(user.passwordConfirm, 10);
       }
   });
+  
+  // User.associate = (models) => {
+  //     User.hasMany(models.Todo);
+  // };
 
   return User;
 }
