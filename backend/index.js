@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
+var cors = require('cors')
 
 const todoRouter = require('./routes/todoRoutes');
 const authRouter = require('./routes/authRoutes');
@@ -12,6 +13,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json());
+app.use(cors())
 
 const db = require("./models");
 db.sequelize.sync();

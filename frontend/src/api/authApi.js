@@ -1,12 +1,9 @@
 import api from './commonApi';
 
 export default {
-    login(username, password) {
+    login(user) {
         return api
-            .post('/auth/login', {
-                username,
-                password
-            })
+            .post('/auth/login', user)
             .then((response) => {
                 if (response.token) {
                     localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -20,13 +17,9 @@ export default {
         localStorage.removeItem('user');
     },
 
-    signup(username, password, passwordConfirm) {
+    signup(user) {
         return api
-            .post('/auth/signup', {
-                username,
-                password,
-                passwordConfirm
-            })
+            .post('/auth/signup', user)
             .then((response) => {
                 if (response.token) {
                     localStorage.setItem('user', JSON.stringify(response.data.user));

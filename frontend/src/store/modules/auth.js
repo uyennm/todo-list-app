@@ -1,4 +1,4 @@
-import authApi from './../api/authApi';
+import authApi from './../../api/authApi';
 
 const user = JSON.parse(localStorage.getItem('user'));
 const state = user 

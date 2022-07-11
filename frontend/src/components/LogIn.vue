@@ -3,12 +3,12 @@
         <form class="login-form" @submit.prevent="login">
             <P>
                 <label for="username">Username:</label>
-                <input id="username" v-model="username" v-validate="'required'">
+                <input id="username" v-model="user.username">
             </P>
 
             <P>
                 <label for="password">Password:</label>
-                <input id="password" type="password" v-model="password" v-validate="'required'">
+                <input id="password" type="password" v-model="user.password">
             </P>
 
             <p>
@@ -19,19 +19,20 @@
 </template>
 
 <script>
-import { threadId } from 'worker_threads'
 
 export default {
     data() {
         return {
-            username: null,
-            password: null,
+            user: {
+                username: null,
+                password: null
+            }
         }
     },
     methods: {
         login() {
-            if (this.username && this.password) {
-                this.$store.dispatch('auth/login', username, password);
+            if (this.user.username && this.user.password) {
+                this.$store.dispatch('auth/login', this.user);
             }
         }
     }
