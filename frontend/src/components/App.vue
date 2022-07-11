@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <h1>Todo list app</h1>
+    <button>Sign Up</button>
+    <button>Log In</button>
     <TodoList/>
     <DoneList/>
   </div>
@@ -13,6 +15,11 @@
     export default {
         name: 'app',
         components: { TodoList, DoneList },
+        computed: {
+          isAuthenticated() {
+            this.$store.getters['auth/isAuthenticated']
+          }
+        }
     }
 </script>
 

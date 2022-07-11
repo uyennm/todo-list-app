@@ -1,14 +1,14 @@
 <template>
-    <div class="border-2 border-solid border-blue-400 rounded">
+    <div>
         <form class="login-form" @submit.prevent="login">
             <P>
                 <label for="username">Username:</label>
-                <input id="username" v-model="username">
+                <input id="username" v-model="username" v-validate="'required'">
             </P>
 
             <P>
                 <label for="password">Password:</label>
-                <input id="password" type="password" v-model="password">
+                <input id="password" type="password" v-model="password" v-validate="'required'">
             </P>
 
             <p>
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import { threadId } from 'worker_threads'
+
 export default {
     data() {
         return {
@@ -28,13 +30,9 @@ export default {
     },
     methods: {
         login() {
-            // let todo = {
-            //     title: this.title,
-            //     description: this.description,
-            // }
-            // this.$emit('add-todo', todo)
-            // this.title = null
-            // this.description = null
+            if (this.username && this.password) {
+                this.$store.dispatch('auth/login', username, password);
+            }
         }
     }
 }

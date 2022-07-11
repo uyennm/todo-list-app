@@ -1,19 +1,19 @@
 <template>
     <div class="border-2 border-solid border-blue-400 rounded">
-        <form class="login-form" @submit.prevent="signup">
+        <form class="signup-form" @submit.prevent="signup">
             <P>
                 <label for="username">Username:</label>
-                <input id="username" v-model="username">
+                <input id="username" v-model="username" v-validate="'required|min:3|max:20'">
             </P>
 
             <P>
                 <label for="password">Password:</label>
-                <input id="password" type="password" v-model="password">
+                <input id="password" type="password" v-model="password" v-validate="'required|min:6|max:40'">
             </P>
 
             <P>
                 <label for="confirmPassword">Confirm password:</label>
-                <input id="confirmPassword" type="password" v-model="confirmPassword">
+                <input id="confirmPassword" type="password" v-model="confirmPassword" v-validate="'required|min:6|max:40'">
             </P>
 
             <p>
@@ -34,13 +34,11 @@ export default {
     },
     methods: {
         signup() {
-            // let todo = {
-            //     title: this.title,
-            //     description: this.description,
-            // }
-            // this.$emit('add-todo', todo)
-            // this.title = null
-            // this.description = null
+            this.$validator.validate().then(isValid => {
+                if (isValid) {
+                    this.$store.dispatch('auth/signup', username, password, passwordConfirm);
+                }
+            });
         }
     }
 }

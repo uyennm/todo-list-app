@@ -6,9 +6,9 @@
         <h3>{{ todo.title }}</h3>
         <p>{{ todo.description }}</p>
 
-        <button @click="editTodo(todo)">Edit</button>
-        <button @click="doneTodo(todo)">Done</button>
-        <button @click="removeTodo(todo)">Remove</button>
+        <button @click="editTodo(isAuthenticated, todo)">Edit</button>
+        <button @click="doneTodo(isAuthenticated, todo)">Done</button>
+        <button @click="removeTodo(isAuthenticated, todo)">Remove</button>
       </li>
     </ul>
 
@@ -21,25 +21,29 @@ import TodoItem from './TodoItem.vue'
 export default {
   components: { TodoItem },
   methods: {
-    addNewTodo(todo) {
-      this.$store.dispatch('todos/addTodo', todo)
+    addNewTodo(isAuthenticated, todo) {
+      this.$store.dispatch('todos/addTodo', isAuthenticated, todo)
     },
 
-    editTodo(todo) {
-      this.$store.dispatch('todos/editTodo', todo)
+    editTodo(isAuthenticated, todo) {
+      this.$store.dispatch('todos/editTodo', isAuthenticated, todo)
     },
 
-    doneTodo(todo) {
-      this.$store.dispatch('todos/doneTodo', todo)
+    doneTodo(isAuthenticated, todo) {
+      this.$store.dispatch('todos/doneTodo', isAuthenticated, todo)
     },
 
-    removeTodo(todo) {
-      this.$store.dispatch('todos/removeTodo', todo)
+    removeTodo(isAuthenticated, todo) {
+      this.$store.dispatch('todos/removeTodo', isAuthenticated, todo)
     }
   },
   computed: {
     todos() {
       return this.$store.getters['todos/todos']
+    },
+
+    isAuthenticated() {
+      return this.$store.getters['auth/isAuthenticated']
     }
   },
   created() {

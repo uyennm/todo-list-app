@@ -6,8 +6,8 @@
         <h3>{{ todo.title }}</h3>
         <p>{{ todo.description }}</p>
 
-        <button @click="editTodo(todo)">Edit</button>
-        <button @click="removeTodo(todo)">Remove</button>
+        <button @click="editTodo(isAuthenticated, todo)">Edit</button>
+        <button @click="removeTodo(isAuthenticated, todo)">Remove</button>
       </li>
     </ul>
 
@@ -18,17 +18,21 @@
 export default {
   methods: {
 
-    editTodo(todo) {
-      this.$store.dispatch('todos/editTodo', todo)
+    editTodo(isAuthenticated, todo) {
+      this.$store.dispatch('todos/editTodo', isAuthenticated, todo)
     },
 
-    removeTodo(todo) {
-      this.$store.dispatch('todos/removeTodo', todo)
+    removeTodo(isAuthenticated, todo) {
+      this.$store.dispatch('todos/removeTodo', isAuthenticated, todo)
     }
   },
   computed: {
     todos() {
       return this.$store.getters['todos/doneTodos']
+    },
+
+    isAuthenticated() {
+      return this.$store.getters['auth/isAuthenticated']
     }
   },
 }

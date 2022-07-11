@@ -11,6 +11,7 @@ exports.getTodosOfUser = catchAsync(async (req, res, next) => {
   
     res.status(200).json({
         status: 'success',
+        user: req.user,
         data: {
             todos,
         },
@@ -27,6 +28,7 @@ exports.createTodo = catchAsync(async (req, res, next) => {
 
     res.status(201).json({
         status: 'success',
+        user: req.user,
         data: {
             todo: newTodo,
         }
