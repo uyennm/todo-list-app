@@ -28,14 +28,11 @@ const createSendToken = (user, statusCode, res) => {
     res.status(statusCode).json({
         status: 'success',
         token,
-        data: {
-            user
-        }
+        user
     });
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-    console.log(req.body);
     const newUser = await User.create({
         username: req.body.username,
         password: req.body.password,
@@ -75,8 +72,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-    console.log(decoded)
 
     const currUser = await User.findByPk(decoded.id);
     if (!currUser) {

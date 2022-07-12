@@ -36,7 +36,9 @@ export default {
     },
     methods: {
         signup() {
-            this.$store.dispatch('auth/signup', this.user);
+            this.$store.dispatch('auth/signup', this.user).then(() => {
+                this.$router.push('/');
+            });
         }
     }
 }

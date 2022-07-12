@@ -12,9 +12,7 @@ exports.getTodosOfUser = catchAsync(async (req, res, next) => {
     res.status(200).json({
         status: 'success',
         user: req.user,
-        data: {
-            todos,
-        },
+        todos,
     });
 });
 
@@ -29,14 +27,12 @@ exports.createTodo = catchAsync(async (req, res, next) => {
     res.status(201).json({
         status: 'success',
         user: req.user,
-        data: {
-            todo: newTodo,
-        }
+        todo: newTodo,
     });
 });
 
 exports.updateTodo = catchAsync(async (req, res, next) => {
-    const todo = await Todo.update(
+    const isFoundTodo = await Todo.update(
         {
             title: req.body.title,
             description: req.body.description,
@@ -49,16 +45,20 @@ exports.updateTodo = catchAsync(async (req, res, next) => {
             }
         }
     );
-
-    if (!todo) {
+    
+    if (!isFoundTodo) {
         throw new Error('No todo found');
+    }
+
+    const todo = {
+        title: req.body.title,
+        description: req.body.description,
+        isDone: req.body.isDone
     }
 
     res.status(200).json({
         status: 'success',
-        data: {
-            todo
-        }
+        todo
     });
 });
 
@@ -76,6 +76,5 @@ exports.deleteTodo = catchAsync(async (req, res, next) => {
 
     res.status(204).json({
         status: 'success',
-        data: null,
     });
 });

@@ -3,12 +3,30 @@
     <p v-if="!todos.length">There are no todos yet.</p>
     <ul>
       <li v-for="(todo, index) in todos" :key="index">
-        <h3>{{ todo.title }}</h3>
-        <p>{{ todo.description }}</p>
+        <div @click="setHasEditTodo" v-show="!hasEditTodo">
+          <h3>{{ todo.title }}</h3>
+          <p>{{ todo.description }}</p>
+          
+          <div class="button-group">
+            <button @click="doneTodo(todo)">Done</button>
+            <button @click="removeTodo(todo)">Remove</button>
+          </div>
+        </div>
 
-        <button @click="editTodo(isAuthenticated, todo)">Edit</button>
-        <button @click="doneTodo(isAuthenticated, todo)">Done</button>
-        <button @click="removeTodo(isAuthenticated, todo)">Remove</button>
+        <form v-show="hasEditTodo" class="new-item-form" @submit.prevent="editTodo(todo)">
+            <P>
+                <label for="title">Title:</label>
+                <input id="title" v-model="todo.title">
+            </P>
+            <P>
+                <label for="description">Description:</label>
+                <textarea id="description" v-model="todo.description"></textarea>
+            </P>
+            <p>
+                <input type="submit" value="Save">
+            </p>
+        </form>
+
       </li>
     </ul>
 
@@ -19,22 +37,53 @@
 <script>
 import TodoItem from './TodoItem.vue'
 export default {
+  data() {
+    return {
+      hasEditTodo: false,
+    }
+  },
   components: { TodoItem },
   methods: {
-    addNewTodo(isAuthenticated, todo) {
-      this.$store.dispatch('todos/addTodo', isAuthenticated, todo)
+    addNewTodo(todo) {
+      let data = {
+        isAuthenticated: this.isAuthenticated,
+        todo
+      }
+      this.$store.dispatch('todos/addTodo', data)
     },
 
-    editTodo(isAuthenticated, todo) {
-      this.$store.dispatch('todos/editTodo', isAuthenticated, todo)
+    editTodo(todo) {
+      let data = {
+        isAuthenticated: this.isAuthenticated,
+        todo
+      }
+      this.$store.dispatch('todos/editTodo', data).then(() => {
+        this.unsetHasEditTodo();
+      })
     },
 
-    doneTodo(isAuthenticated, todo) {
-      this.$store.dispatch('todos/doneTodo', isAuthenticated, todo)
+    doneTodo(todo) {
+      let data = {
+        isAuthenticated: this.isAuthenticated,
+        todo
+      }
+      this.$store.dispatch('todos/doneTodo', data)
     },
 
-    removeTodo(isAuthenticated, todo) {
-      this.$store.dispatch('todos/removeTodo', isAuthenticated, todo)
+    removeTodo(todo) {
+      let data = {
+        isAuthenticated: this.isAuthenticated,
+        todo
+      }
+      this.$store.dispatch('todos/removeTodo', data)
+    },
+
+    setHasEditTodo() {
+      this.hasEditTodo = true
+    },
+
+    unsetHasEditTodo() {
+      this.hasEditTodo = false
     }
   },
   computed: {
@@ -47,7 +96,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('todos/getAllTodos')
+    this.$store.dispatch('todos/getAllTodos', this.isAuthenticated)
   }
 }
 

@@ -3,12 +3,12 @@
         <form class="new-item-form" @submit.prevent="onSubmit">
             <P>
                 <label for="title">Title:</label>
-                <input id="title" v-model="title">
+                <input id="title" v-model="todo.title">
             </P>
 
             <P>
                 <label for="description">Description:</label>
-                <textarea id="description" v-model="description"></textarea>
+                <textarea id="description" v-model="todo.description"></textarea>
             </P>
 
             <p>
@@ -22,19 +22,27 @@
 export default {
     data() {
         return {
-            title: null,
-            description: null,
+            todo: {
+                id: null,
+                title: null,
+                description: null,
+                isDone: false,
+            }
         }
     },
     methods: {
         onSubmit() {
-            let todo = {
-                title: this.title,
-                description: this.description,
+            let newTodo = {
+                id: null,
+                title: this.todo.title,
+                description: this.todo.description,
+                isDone: this.todo.isDone
             }
-            this.$emit('add-todo', todo)
-            this.title = null
-            this.description = null
+
+            this.$emit('add-todo', newTodo)
+            this.todo.title = null
+            this.todo.description = null
+            this.todo.isDone = false
         }
     }
 }
