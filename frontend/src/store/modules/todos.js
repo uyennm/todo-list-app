@@ -6,6 +6,7 @@ const state = () => ({
 
 const getters = {
     todos(state) {
+        if (state.allTodos)
         return state.allTodos.filter(todo => !todo.isDone)
     },
     doneTodos(state) {
@@ -65,7 +66,7 @@ const actions = {
 
 const mutations = {
     setTodos (state, todos) {
-        state.allTodos = todos
+        state.allTodos = todos || []
     },
 
     addTodo(state, todo) {

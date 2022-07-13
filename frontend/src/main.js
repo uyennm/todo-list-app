@@ -4,6 +4,14 @@ import store from './store'
 import '../src/stylesheets/tailwind.css'
 import { router } from './router'
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faCheck, faTrash, faPencil, faPlus, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faCheck, faTrash, faPencil, faPlus, faFloppyDisk)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
 new Vue({
     router,
     store,
