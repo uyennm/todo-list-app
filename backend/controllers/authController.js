@@ -35,6 +35,16 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
     try {
+        const user = await User.findOne({ 
+            where: { username: req.body.username }
+        });
+
+        if (user) {
+            res.status(409).json({
+                message: "Username already exists",
+            })
+        }
+
         const newUser = await User.create({
             username: req.body.username,
             password: req.body.password,
@@ -54,16 +64,15 @@ exports.signup = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
     const { username, password } = req.body;
 
-    if (!username || !password) {
-        return next(new AppError('Please enter username and password!', 400)); 
-    }
-
     const user = await User.findOne({ 
         where: { username }
     })
 
     if (!user || !(await user.correctPassword(password, user.password))) {
-        return next(new AppError('Incorrect username or password', 401)); 
+        // return next(new AppError('Incorrect username or password', 401)); 
+        res.status(401).json({
+            message: "Incorrect username or password",
+        })
     }
 
     createSendToken(user, 200, res);

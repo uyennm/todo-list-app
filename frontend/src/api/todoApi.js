@@ -15,6 +15,7 @@ export default {
     },
 
     updateTodo(todo) {
+      console.log(todo)
       return api.patch(`/todo/${todo.id}`, todo, { headers: authHeader() }).then((response) => {
         return response.data.todo;
       });

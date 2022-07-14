@@ -1,6 +1,7 @@
 const express = require('express');
 const todoController = require('../controllers/todoController');
 const authController = require('../controllers/authController');
+const validateController = require('../controllers/validateController');
 
 const router = express.Router();
 

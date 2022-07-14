@@ -22,8 +22,8 @@ const actions = {
         } else {
             todos = await todoApi.getTodos()
         }
-
         commit('setTodos', todos)
+        localStorage.setItem('todos', JSON.stringify(todos))
     },
 
     async addTodo({ commit, state }, data) {

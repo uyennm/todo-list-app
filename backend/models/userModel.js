@@ -5,35 +5,12 @@ module.exports = (sequelize, Sequelize) => {
     username: {
       type: Sequelize.STRING,
       unique: true,
-      allowNull: false,
-      validate: {
-          notNull: {
-              msg: 'Please enter your username'
-            }
-      }
     },
     password: {
       type: Sequelize.STRING,
-      allowNull: false,
-      validate: {
-          notNull: {
-              msg: 'Please enter your password'
-            }
-      }
     },
     passwordConfirm: {
       type: Sequelize.STRING,
-      allowNull: false,
-      validate: {
-          notNull: {
-              msg: 'Please confirm your password'
-            },
-          isMatchWithPassword(value){
-              if (value !== this.password) {
-                  throw new Error('Passwords are not the same')
-              }
-          },
-        },
     }
   });
 
