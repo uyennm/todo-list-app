@@ -9,10 +9,15 @@
             <button type="submit" class="flex self-end bg-gray-300 p-2 m-2 border-2 rounded hover:bg-gray-500 border-green hover:bg-green">Submit</button>
         </form>
         <div class="w-1/3 h-full bg-grey-darkest"></div>
+        <notifications
+            group="alert"
+            position="top right"
+        />
     </div>
 </template>
 
 <script>
+import { notifyError, notifySuccess } from './../services/notify';
 
 export default {
     data() {
@@ -24,11 +29,14 @@ export default {
         }
     },
     methods: {
-        login() {
-            if (this.user.username && this.user.password) {
-                this.$store.dispatch('auth/login', this.user).then(() => {
-                    this.$router.push('/');
-                });
+        async login() {
+            const {success, errorMessage } = await this.$store.dispatch('auth/login', this.user);
+
+            if (success) {
+                notifySuccess('Log in successfully')
+                this.$router.push('/');
+            } else {
+                notifyError(errorMessage)
             }
         }
     }

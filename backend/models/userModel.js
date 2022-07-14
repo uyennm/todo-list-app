@@ -47,10 +47,6 @@ module.exports = (sequelize, Sequelize) => {
           user.passwordConfirm = await bcrypt.hash(user.passwordConfirm, 10);
       }
   });
-  
-  // User.associate = (models) => {
-  //     User.hasMany(models.Todo);
-  // };
 
   return User;
 }

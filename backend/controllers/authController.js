@@ -3,6 +3,7 @@ const { promisify } = require('util');
 const db = require("./../models");
 const User = db.User
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
 
 const signToken = (id) => {
     return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -33,20 +34,28 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-    const newUser = await User.create({
-        username: req.body.username,
-        password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm,
-    });
+    try {
+        const newUser = await User.create({
+            username: req.body.username,
+            password: req.body.password,
+            passwordConfirm: req.body.passwordConfirm,
+        });
 
-    createSendToken(newUser, 201, res);
+        createSendToken(newUser, 201, res);
+    } catch (error) {
+        res.status(401).json({
+            message: error.message,
+        })
+        console.log(error.message)
+    }   
+
 });
 
 exports.login = catchAsync(async (req, res, next) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-        throw new Error('Please enter username and password!');
+        return next(new AppError('Please enter username and password!', 400)); 
     }
 
     const user = await User.findOne({ 
@@ -54,7 +63,7 @@ exports.login = catchAsync(async (req, res, next) => {
     })
 
     if (!user || !(await user.correctPassword(password, user.password))) {
-        throw new Error('Incorrect username or password');
+        return next(new AppError('Incorrect username or password', 401)); 
     }
 
     createSendToken(user, 200, res);
@@ -75,7 +84,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
     const currUser = await User.findByPk(decoded.id);
     if (!currUser) {
-        throw new Error('The user belonging to this token does no longer exist');
+        return next(new AppError('The user belonging to this token does no longer exist', 401)); 
     }
 
     req.user = currUser;

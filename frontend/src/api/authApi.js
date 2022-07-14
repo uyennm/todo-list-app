@@ -1,5 +1,16 @@
 import api from './commonApi';
 
+const getErrorMessageFromErrorCode = (errorCode) => {
+    switch (errorCode) {
+      case 400:
+        return 'Please enter username and password!';
+      case 401:
+        return 'Incorrect username or password';
+      default:
+        return 'Invalid account, please try again!';
+    }
+};
+
 export default {
     login(user) {
         return api
@@ -10,8 +21,21 @@ export default {
                     localStorage.setItem('token', JSON.stringify(response.data.token));
                 }
 
-                return response;
+                return {
+                    success: true,
+                    response,
+                }
             })
+            .catch (error => {
+                if (error.response) {
+                    const errorCode = error.response.status;
+                    const errorMessage = getErrorMessageFromErrorCode(errorCode);
+                    return {
+                        success: false,
+                        errorMessage,
+                    };
+                }
+            });
     },
 
     logout() {
@@ -29,7 +53,20 @@ export default {
                     localStorage.setItem('token', JSON.stringify(response.data.token));
                 }
 
-                return response;
+                return {
+                    success: true,
+                    response,
+                }
             })
+            .catch (error => {
+                if (error.response) {
+                    const errorCode = error.response.status;
+                    const errorMessage = getErrorMessageFromErrorCode(errorCode);
+                    return {
+                        success: false,
+                        errorMessage,
+                    };
+                }
+            });
     }
 }

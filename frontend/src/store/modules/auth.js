@@ -14,17 +14,15 @@ const getters = {
 }
 
 const actions = {
-    login({ commit }, user) {
-        return authApi.login(user).then(
-            response => {
-                commit('loginSuccess', response.data);
-                return Promise.resolve(response);
-            },
-            error => {
-                commit('loginFailure');
-                return Promise.reject(error);
-            }
-        );
+    async login({ commit }, user) {
+        const { response, success, errorMessage } = await authApi.login(user);
+        if (success) {
+            commit('loginSuccess', response.data);
+        }
+        else {
+            commit('loginFailure');
+        }
+        return { success, errorMessage } 
     },
 
     logout({ commit }) {
@@ -32,17 +30,15 @@ const actions = {
         commit('logout');
     },
 
-    signup({ commit }, user) {
-        return authApi.signup(user).then(
-            response => {
-                commit('signupSuccess', response.data);
-                return Promise.resolve(response);
-            },
-            error => {
-                commit('signupFailure');
-                return Promise.reject(error);
-            }
-        );
+    async signup({ commit }, user) {
+        const { response, success, errorMessage } = await authApi.signup(user);
+        if (success) {
+            commit('signupSuccess', response.data);
+        }
+        else {
+            commit('signupFailure');
+        }
+        return { success, errorMessage } 
     },
 }
 
