@@ -29,10 +29,25 @@ const actions = {
     async addTodo({ commit, state }, data) {
         let newTodo = data.todo;
         if (data.isAuthenticated) {
-            newTodo = await todoApi.addTodo(data.todo)
+            const { response, success, errorMessage } = await todoApi.addTodo(newTodo);
+            if (success) {
+                newTodo = response.data.todo;
+                commit('addTodo', newTodo)
+                localStorage.setItem('todos', JSON.stringify(state.allTodos))
+            }
+            return { success, errorMessage }
+        } else {
+            let success = true, errorMessage;
+            if (!newTodo.title) {
+                errorMessage = "Title is required";
+                success = false;
+            } else {
+                commit('addTodo', newTodo)
+                localStorage.setItem('todos', JSON.stringify(state.allTodos))
+            }
+            return { success, errorMessage }
         }
-        commit('addTodo', newTodo)
-        localStorage.setItem('todos', JSON.stringify(state.allTodos))
+
     },
 
     async editTodo({ commit, state }, data) {

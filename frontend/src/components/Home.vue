@@ -3,10 +3,15 @@
     <TodoList :isDoneList="false" />
     <TodoForm @add-todo="addNewTodo" />
     <TodoList :isDoneList="true" />
+    <notifications
+        group="alert"
+        position="top right"
+    />
   </div>
 </template>
 
 <script>
+import { notifyError } from './../services/notify'
 import TodoList from './TodoList.vue'
 import TodoForm from './TodoForm.vue'
 
@@ -14,12 +19,15 @@ export default {
   name: 'app',
   components: { TodoList, TodoForm },
   methods: {
-    addNewTodo(todo) {
+    async addNewTodo(todo) {
       let data = {
-        isAuthenticated: this.isAuthenticated,
+        isAuthenticated: this.isAuthenticated, 
         todo
       }
-      this.$store.dispatch('todos/addTodo', data)
+      const { success, errorMessage } = await this.$store.dispatch('todos/addTodo', data)
+      if (!success) {
+        notifyError(errorMessage);
+      }
     },
   },
   computed: {

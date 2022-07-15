@@ -3,11 +3,11 @@ const AppError = require('../utils/appError');
 const db = require("./../models");
 
 const validateRequest = (req, res, next, schema) => {
-    // const options = {
-    //     stripUnknown: true // remove unknown props
-    // }
+    const options = {
+        allowUnknown: true, // ignore unknown props
+    }
 
-    const { error, value } = schema.validate(req.body);
+    const { error, value } = schema.validate(req.body, options);
 
     if (error) {
         res.status(401).json({
@@ -38,10 +38,10 @@ exports.loginSchema = (req, res, next) => {
     validateRequest(req, res, next, schema);
 }
 
-// exports.createTodoSchema = (req, res, next) => {
-//     const schema = Joi.object({
-//         title: Joi.string().min(4).required(),
-//     });
+exports.createTodoSchema = (req, res, next) => {
+    const schema = Joi.object({
+        title: Joi.string().min(4).required(),
+    });
 
-//     validateRequest(req, res, next, schema);
-// }
+    validateRequest(req, res, next, schema);
+}

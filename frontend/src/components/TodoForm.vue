@@ -21,7 +21,6 @@ export default {
     data() {
         return {
             todo: {
-                id: null,
                 title: null,
                 description: null,
                 isDone: false,
@@ -31,7 +30,6 @@ export default {
     methods: {
         onSubmit() {
             let newTodo = {
-                id: null,
                 title: this.todo.title,
                 description: this.todo.description,
                 isDone: this.todo.isDone

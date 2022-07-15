@@ -8,7 +8,7 @@ const router = express.Router();
 router
     .route('/')
     .get(authController.protect, todoController.getTodosOfUser)
-    .post(authController.protect, todoController.createTodo);
+    .post(validateController.createTodoSchema ,authController.protect, todoController.createTodo);
 
 router
     .route('/:id')
