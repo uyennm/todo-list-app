@@ -63,7 +63,7 @@ const mutations = {
 
     signupSuccess(state, data) {
         state.status.loggedIn = true;
-        state.user = data.ser;
+        state.user = data.user;
         state.token = data.token;
     },
 

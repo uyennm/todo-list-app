@@ -5,7 +5,7 @@
       <p v-if="!todos.length">There are no <span v-show="isDoneList">done</span> todos yet.</p>
       <div class="flex bg-orange-300 w-auto h-auto p-2 mx-2 my-3 rounded-lg todo-card" v-for="(todo, index) in todos"
         :key="index">
-        <TodoItem :title="todo.title" :description="todo.description" :isDoneTodo="isDoneList" />
+        <TodoItem :id="todo.id" :title="todo.title" :description="todo.description" :isDoneTodo="isDoneList" />
       </div>
 
     </div>

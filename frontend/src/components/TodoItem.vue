@@ -50,6 +50,7 @@ export default {
     }
   },
   props: {
+    id: Number,
     title: String,
     description: String,
     isDoneTodo: Boolean,
@@ -96,7 +97,7 @@ export default {
     },
 
     todo() {
-      let todo = { title: this.title, description: this.description }
+      let todo = { id:this.id, title: this.title, description: this.description }
       return todo;
     },
   }
