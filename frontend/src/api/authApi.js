@@ -1,6 +1,7 @@
 import api from './commonApi';
+import localStorageService from './../services/localStorage';
 
-const converErrorMessageToDisplay = (errorMessage) => {
+const convertErrorMessageToDisplay = (errorMessage) => {
     switch (errorMessage) {
         case '"username" must be a string':
             return 'Username is required';
@@ -22,19 +23,22 @@ export default {
         return api
             .post('/auth/login', user)
             .then((response) => {
+                const currUser = {
+                    username: response.data.user.username,
+                    token: response.data.token,
+                }
                 if (response.data.token) {
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
-                    localStorage.setItem('token', JSON.stringify(response.data.token));
+                    localStorageService.setUser(currUser);
                 }
 
                 return {
                     success: true,
-                    response,
+                    currUser,
                 }
             })
             .catch (error => {
                 if (error.response) {
-                    const errorMessage = converErrorMessageToDisplay(error.response.data.message);
+                    const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
                     console.log(error.response.data.message);
                     return {
                         success: false,
@@ -45,27 +49,31 @@ export default {
     },
 
     logout() {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        localStorage.removeItem('todos')
+        localStorageService.removeTodos();
+        localStorageService.removeUser();
     },
 
     signup(user) {
         return api
             .post('/auth/signup', user)
             .then((response) => {
-                if (response.data.token) {
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
-                    localStorage.setItem('token', JSON.stringify(response.data.token));
+                const currUser = {
+                    username: response.data.user.username,
+                    token: response.data.token,
                 }
+
+                if (response.data.token) {
+                    localStorageService.setUser(currUser);
+                }
+
                 return {
                     success: true,
-                    response,
+                    currUser,
                 }
             })
             .catch (error => {
                 if (error.response) {
-                    const errorMessage = converErrorMessageToDisplay(error.response.data.message);
+                    const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
                     return {
                         success: false,
                         errorMessage,

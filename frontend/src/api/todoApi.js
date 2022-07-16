@@ -1,7 +1,7 @@
 import api from './commonApi';
 import authHeader from './authHeader';
 
-const converErrorMessageToDisplay = (errorMessage) => {
+const convertErrorMessageToDisplay = (errorMessage) => {
   switch (errorMessage) {
       case '"title" must be a string':
           return 'Title is required';
@@ -11,15 +11,14 @@ const converErrorMessageToDisplay = (errorMessage) => {
 }
 
 export default {
-    getTodos() {
-      return api.get('/todo', { headers: authHeader() }).then((response) => {
+    getTodos(token) {
+      return api.get('/todo', { headers: authHeader(token) }).then((response) => {
         return response.data.todos;
       });
     },
 
-    addTodo(newTodo) {
-      console.log(newTodo)
-      return api.post('/todo', newTodo, { headers: authHeader() })
+    addTodo(newTodo, token) {
+      return api.post('/todo', newTodo, { headers: authHeader(token) })
       .then((response) => {
         return {
           success: true,
@@ -28,8 +27,7 @@ export default {
       })            
       .catch (error => {
           if (error.response) {
-              const errorMessage = converErrorMessageToDisplay(error.response.data.message);
-              console.log(error.response.data.message);
+              const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
               return {
                   success: false,
                   errorMessage,
@@ -38,15 +36,14 @@ export default {
       });
     },
 
-    updateTodo(todo) {
-      console.log(todo)
-      return api.patch(`/todo/${todo.id}`, todo, { headers: authHeader() }).then((response) => {
+    updateTodo(todo, token) {
+      return api.patch(`/todo/${todo.id}`, todo, { headers: authHeader(token) }).then((response) => {
         return response.data.todo;
       });
     },
 
-    deleteTodo(todo) {
-      return api.delete(`/todo/${todo.id}`, { headers: authHeader() });
+    deleteTodo(todo, token) {
+      return api.delete(`/todo/${todo.id}`, { headers: authHeader(token) });
     }
   
 }

@@ -1,4 +1,5 @@
 import todoApi from '../../api/todoApi'
+import localStorageService from './../../services/localStorage'
 
 const state = () => ({
     allTodos: [],
@@ -15,25 +16,25 @@ const getters = {
 }
 
 const actions = {
-    async getAllTodos ({ commit }, isAuthenticated) {
-        var todos;
+    async getAllTodos ({ commit, rootState }, isAuthenticated) {
+        let todos;
         if (!isAuthenticated) {
-            todos = JSON.parse(localStorage.getItem('todos'))
+            todos = localStorageService.getTodos();
         } else {
-            todos = await todoApi.getTodos()
+            todos = await todoApi.getTodos(rootState.auth.user.token);
         }
-        commit('setTodos', todos)
-        localStorage.setItem('todos', JSON.stringify(todos))
+        commit('setTodos', todos);
+        localStorageService.setTodos(todos);
     },
 
-    async addTodo({ commit, state }, data) {
+    async addTodo({ commit, state, rootState }, data) {
         let newTodo = data.todo;
         if (data.isAuthenticated) {
-            const { response, success, errorMessage } = await todoApi.addTodo(newTodo);
+            const { response, success, errorMessage } = await todoApi.addTodo(newTodo, rootState.auth.user.token);
             if (success) {
                 newTodo = response.data.todo;
                 commit('addTodo', newTodo)
-                localStorage.setItem('todos', JSON.stringify(state.allTodos))
+                localStorageService.setTodos(state.allTodos);
             }
             return { success, errorMessage }
         } else {
@@ -43,38 +44,38 @@ const actions = {
                 success = false;
             } else {
                 commit('addTodo', newTodo)
-                localStorage.setItem('todos', JSON.stringify(state.allTodos))
+                localStorageService.setTodos(state.allTodos);
             }
             return { success, errorMessage }
         }
 
     },
 
-    async editTodo({ commit, state }, data) {
+    async editTodo({ commit, state, rootState }, data) {
         let newTodo = data.todo;
         if (data.isAuthenticated) {
-            newTodo = await todoApi.updateTodo(data.todo)
+            newTodo = await todoApi.updateTodo(data.todo, rootState.auth.user.token)
         }
         commit('editTodo', newTodo)
-        localStorage.setItem('todos', JSON.stringify(state.allTodos))
+        localStorageService.setTodos(state.allTodos);
     },
 
-    async doneTodo({ commit, state }, data) {
+    async doneTodo({ commit, state, rootState }, data) {
         let newTodo = data.todo
         if (data.isAuthenticated) {
             data.todo.isDone = true
-            newTodo = await todoApi.updateTodo(data.todo)
+            newTodo = await todoApi.updateTodo(data.todo, rootState.auth.user.token)
         }
         commit('doneTodo', newTodo)
-        localStorage.setItem('todos', JSON.stringify(state.allTodos))
+        localStorageService.setTodos(state.allTodos);
     },
 
-    async removeTodo({ commit, state }, data) {
+    async removeTodo({ commit, state, rootState }, data) {
         if (data.isAuthenticated) {
-            await todoApi.deleteTodo(data.todo)
+            await todoApi.deleteTodo(data.todo, rootState.auth.user.token)
         }
         commit('removeTodo', data.todo)
-        localStorage.setItem('todos', JSON.stringify(state.allTodos))
+        localStorageService.setTodos(state.allTodos);
     }
 
 }

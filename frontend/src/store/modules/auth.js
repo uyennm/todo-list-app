@@ -1,23 +1,27 @@
 import authApi from './../../api/authApi';
-
-const user = JSON.parse(localStorage.getItem('user'));
-const token = JSON.parse(localStorage.getItem('token'));
+import localStorageService from './../../services/localStorage';
 
 const state = {
-    status: user ? { loggedIn: true } : { loggedIn: false },
-    user: user ? user : null,
-    token: token ? token : null
+    user: {
+        username: null,
+        token: null,
+    }
 }
 
 const getters = {
-    isAuthenticated: (state) => state.user !== null,
+    isAuthenticated: (state) => state.user.token !== null
 }
 
 const actions = {
+    getUser({ commit }) {
+        const user = localStorageService.getUser();
+        commit('setUser', user);
+    },
+
     async login({ commit }, user) {
-        const { response, success, errorMessage } = await authApi.login(user);
+        const { currUser, success, errorMessage } = await authApi.login(user);
         if (success) {
-            commit('loginSuccess', response.data);
+            commit('loginSuccess', currUser);
         }
         else {
             commit('loginFailure');
@@ -31,9 +35,9 @@ const actions = {
     },
 
     async signup({ commit }, user) {
-        const { response, success, errorMessage } = await authApi.signup(user);
+        const { currUser, success, errorMessage } = await authApi.signup(user);
         if (success) {
-            commit('signupSuccess', response.data);
+            commit('signupSuccess', currUser);
         }
         else {
             commit('signupFailure');
@@ -43,34 +47,34 @@ const actions = {
 }
 
 const mutations = {
-    loginSuccess(state, data) {
-        state.status.loggedIn = true;
-        state.user = data.user;
-        state.token = data.token;
+    setUser (state, user) {
+        if (user) {
+            state.user.username = user.username;
+            state.user.token = user.token;
+        }
+    },
+
+    loginSuccess(state, currUser) {
+        state.user = currUser;
     },
 
     loginFailure(state) {
-        state.status.loggedIn = false;
-        state.user = null;
-        state.token = null;
+        state.user.username = null;
+        state.user.token = null;
     },
 
     logout(state) {
-        state.status.loggedIn = false;
-        state.user = null;
-        state.token = null;
+        state.user.username = null;
+        state.user.token = null;
     },
 
-    signupSuccess(state, data) {
-        state.status.loggedIn = true;
-        state.user = data.user;
-        state.token = data.token;
+    signupSuccess(state, currUser) {
+        state.user = currUser;
     },
 
     signupFailure(state) {
-        state.status.loggedIn = false;
-        state.user = null;
-        state.token = null;
+        state.user.username = null;
+        state.user.token = null;
     },
 }
 
