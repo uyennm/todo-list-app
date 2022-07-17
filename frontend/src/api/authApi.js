@@ -19,33 +19,33 @@ const convertErrorMessageToDisplay = (errorMessage) => {
 }
 
 export default {
-    login(user) {
-        return api
-            .post('/auth/login', user)
-            .then((response) => {
-                const currUser = {
-                    username: response.data.user.username,
-                    token: response.data.token,
-                }
-                if (response.data.token) {
-                    localStorageService.setUser(currUser);
-                }
+    async login(user) {
+        let response;
+        try {
+            response = await api.post('/auth/login', user);
+            const currUser = {
+                username: response.data.user.username,
+                token: response.data.token,
+            }
 
+            if (response.data.token) {
+                localStorageService.setUser(currUser);
+            }
+
+            return {
+                success: true,
+                currUser,
+            }
+        } catch (error) {
+            if (error.response) {
+                const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
+                console.log(error.response.data.message);
                 return {
-                    success: true,
-                    currUser,
-                }
-            })
-            .catch (error => {
-                if (error.response) {
-                    const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
-                    console.log(error.response.data.message);
-                    return {
-                        success: false,
-                        errorMessage,
-                    };
-                }
-            });
+                    success: false,
+                    errorMessage,
+                };
+            }
+        }
     },
 
     logout() {
@@ -53,32 +53,31 @@ export default {
         localStorageService.removeUser();
     },
 
-    signup(user) {
-        return api
-            .post('/auth/signup', user)
-            .then((response) => {
-                const currUser = {
-                    username: response.data.user.username,
-                    token: response.data.token,
-                }
+    async signup(user) {
+        let response;
+        try {
+            response = await api.post('/auth/signup', user);
+            const currUser = {
+                username: response.data.user.username,
+                token: response.data.token,
+            }
 
-                if (response.data.token) {
-                    localStorageService.setUser(currUser);
-                }
+            if (response.data.token) {
+                localStorageService.setUser(currUser);
+            }
 
+            return {
+                success: true,
+                currUser,
+            }
+        } catch (error) {
+            if (error.response) {
+                const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
                 return {
-                    success: true,
-                    currUser,
-                }
-            })
-            .catch (error => {
-                if (error.response) {
-                    const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
-                    return {
-                        success: false,
-                        errorMessage,
-                    };
-                }
-            });
+                    success: false,
+                    errorMessage,
+                };
+            }
+        }
     }
 }

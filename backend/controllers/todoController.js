@@ -1,7 +1,6 @@
 const db = require("./../models");
 const Todo = db.Todo
 const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError');
 
 exports.getTodosOfUser = catchAsync(async (req, res, next) => {
     const todos = await Todo.findAll({
@@ -48,7 +47,9 @@ exports.updateTodo = catchAsync(async (req, res, next) => {
     );
     
     if (!isFoundTodo) {
-        return next(new AppError('No todo found', 404));
+        return res.status(404).json({
+            message: "No todo found",
+        });
     }
 
     const todo = {
@@ -72,7 +73,9 @@ exports.deleteTodo = catchAsync(async (req, res, next) => {
     });
 
     if (!todo) {
-        return next(new AppError('No todo found', 404));
+        return res.status(404).json({
+            message: "No todo found",
+        });
     }
 
     res.status(204).json({

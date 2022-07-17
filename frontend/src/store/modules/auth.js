@@ -9,7 +9,8 @@ const state = {
 }
 
 const getters = {
-    isAuthenticated: (state) => state.user.token !== null
+    isAuthenticated: (state) => state.user.token !== null,
+    username: (state) => state.user.username,
 }
 
 const actions = {

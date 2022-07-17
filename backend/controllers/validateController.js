@@ -1,6 +1,4 @@
 const Joi = require('joi');
-const AppError = require('../utils/appError');
-const db = require("./../models");
 
 const validateRequest = (req, res, next, schema) => {
     const options = {

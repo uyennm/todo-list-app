@@ -11,39 +11,59 @@ const convertErrorMessageToDisplay = (errorMessage) => {
 }
 
 export default {
-    getTodos(token) {
-      return api.get('/todo', { headers: authHeader(token) }).then((response) => {
+    async getTodos(token) {
+      let response;
+      try {
+        response = await api.get('/todo', { headers: authHeader(token) });
         return response.data.todos;
-      });
+      } catch (error) {
+        if (error.response) {
+          const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
+          return errorMessage;
+        }
+      }
     },
 
-    addTodo(newTodo, token) {
-      return api.post('/todo', newTodo, { headers: authHeader(token) })
-      .then((response) => {
+    async addTodo(newTodo, token) {
+      let response;
+      try {
+        response = await api.post('/todo', newTodo, { headers: authHeader(token) })
         return {
           success: true,
           response
         }
-      })            
-      .catch (error => {
-          if (error.response) {
-              const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
-              return {
-                  success: false,
-                  errorMessage,
-              };
-          }
-      });
+      } catch (error) {
+        if (error.response) {
+          const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
+          return {
+              success: false,
+              errorMessage,
+          };
+        }
+      }      
     },
 
-    updateTodo(todo, token) {
-      return api.patch(`/todo/${todo.id}`, todo, { headers: authHeader(token) }).then((response) => {
+    async updateTodo(todo, token) {
+      let response;
+      try {
+        response = await api.patch(`/todo/${todo.id}`, todo, { headers: authHeader(token) });
         return response.data.todo;
-      });
+      } catch (error) {
+        if (error.response) {
+          const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
+          return errorMessage;
+        }
+      }
     },
 
-    deleteTodo(todo, token) {
-      return api.delete(`/todo/${todo.id}`, { headers: authHeader(token) });
+    async deleteTodo(todo, token) {
+      try {
+        await api.delete(`/todo/${todo.id}`, { headers: authHeader(token) });
+      } catch (error) {
+        if (error.response) {
+          const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
+          return errorMessage;
+        }
+      }
     }
-  
 }

@@ -21,7 +21,11 @@ const actions = {
         if (!isAuthenticated) {
             todos = localStorageService.getTodos();
         } else {
-            todos = await todoApi.getTodos(rootState.auth.user.token);
+            try {
+                todos = await todoApi.getTodos(rootState.auth.user.token);
+            } catch (error) {
+                return error;
+            }
         }
         commit('setTodos', todos);
         localStorageService.setTodos(todos);
