@@ -3,6 +3,7 @@ import localStorageService from './../../services/localStorage'
 
 const state = () => ({
     allTodos: [],
+    nextAvailableId: 1, // for unauthenticated user
 })
 
 const getters = {
@@ -12,23 +13,46 @@ const getters = {
     },
     doneTodos(state) {
         return state.allTodos.filter(todo => todo.isDone)
-    }
+    },
+    nextAvailableId(state) {
+        return state.nextAvailableId;
+    } 
 }
 
 const actions = {
+    getNextAvailableId({ commit }, isAuthenticated) {
+        if (!isAuthenticated){
+            if (!localStorageService.getNextAvailableId()) {
+                localStorageService.initAvailableId();
+            }
+            let id = localStorageService.getNextAvailableId();
+            commit('setNextAvailableId', id);
+        }
+    },
+
+    increaseNextAvailableId({ commit, state }, isAuthenticated) {
+        if (!isAuthenticated){
+            commit('increaseNextAvailableId');
+            localStorageService.setNextAvailableId(state.nextAvailableId);
+        }
+    },
+
     async getAllTodos ({ commit, rootState }, isAuthenticated) {
         let todos;
         if (!isAuthenticated) {
             todos = localStorageService.getTodos();
+            commit('setTodos', todos);
+            localStorageService.setTodos(todos);
+            return { success: true }
         } else {
-            try {
-                todos = await todoApi.getTodos(rootState.auth.user.token);
-            } catch (error) {
-                return error;
-            }
+            let { response, success, errorMessage } = await todoApi.getTodos(rootState.auth.user.token);
+            if (success) {
+                todos = response.data.todos;
+                commit('setTodos', todos);
+                localStorageService.setTodos(todos);
+            } 
+            return { success, errorMessage }
         }
-        commit('setTodos', todos);
-        localStorageService.setTodos(todos);
     },
 
     async addTodo({ commit, state, rootState }, data) {
@@ -37,7 +61,7 @@ const actions = {
             const { response, success, errorMessage } = await todoApi.addTodo(newTodo, rootState.auth.user.token);
             if (success) {
                 newTodo = response.data.todo;
-                commit('addTodo', newTodo)
+                commit('addTodo', newTodo);
                 localStorageService.setTodos(state.allTodos);
             }
             return { success, errorMessage }
@@ -47,7 +71,7 @@ const actions = {
                 errorMessage = "Title is required";
                 success = false;
             } else {
-                commit('addTodo', newTodo)
+                commit('addTodo', newTodo);
                 localStorageService.setTodos(state.allTodos);
             }
             return { success, errorMessage }
@@ -58,34 +82,61 @@ const actions = {
     async editTodo({ commit, state, rootState }, data) {
         let newTodo = data.todo;
         if (data.isAuthenticated) {
-            newTodo = await todoApi.updateTodo(data.todo, rootState.auth.user.token)
+            let { response, success, errorMessage } = await todoApi.updateTodo(data.todo, rootState.auth.user.token)
+            if (success) {
+                newTodo = response.data.todo;
+                commit('editTodo', newTodo);
+                localStorageService.setTodos(state.allTodos);
+            }
+            return { success, errorMessage }
         }
-        commit('editTodo', newTodo)
+        commit('editTodo', newTodo);
         localStorageService.setTodos(state.allTodos);
+        return { success: true }
     },
 
     async doneTodo({ commit, state, rootState }, data) {
         let newTodo = data.todo
         if (data.isAuthenticated) {
             data.todo.isDone = true
-            newTodo = await todoApi.updateTodo(data.todo, rootState.auth.user.token)
+            let { response, success, errorMessage } = await todoApi.updateTodo(data.todo, rootState.auth.user.token);
+            if (success) {
+                newTodo = response.data.todo;
+                commit('doneTodo', newTodo);
+                localStorageService.setTodos(state.allTodos);
+            }
+            return { success, errorMessage }
         }
-        commit('doneTodo', newTodo)
+        commit('doneTodo', newTodo);
         localStorageService.setTodos(state.allTodos);
+        return { success: true }
     },
 
     async removeTodo({ commit, state, rootState }, data) {
         if (data.isAuthenticated) {
-            await todoApi.deleteTodo(data.todo, rootState.auth.user.token)
+            let { success, errorMessage } = await todoApi.deleteTodo(data.todo, rootState.auth.user.token)
+            if (success) {
+                commit('removeTodo', data.todo);
+                localStorageService.setTodos(state.allTodos);
+            }
+            return { success, errorMessage }
         }
-        commit('removeTodo', data.todo)
+        commit('removeTodo', data.todo);
         localStorageService.setTodos(state.allTodos);
+        return { success: true }
     }
-
 }
 
 const mutations = {
-    setTodos (state, todos) {
+    setNextAvailableId(state, id) {
+        state.nextAvailableId = id;
+    },
+
+    increaseNextAvailableId(state) {
+        state.nextAvailableId += 1;
+    },
+
+    setTodos(state, todos) {
         state.allTodos = todos || []
     },
 
@@ -94,18 +145,18 @@ const mutations = {
     },
 
     editTodo(state, todo) {
-        var index = state.allTodos.findIndex(item => item.title === todo.title)
+        let index = state.allTodos.findIndex(item => item.id == todo.id)
         state.allTodos[index].title = todo.title;
         state.allTodos[index].description = todo.description;
     },
 
     doneTodo(state, todo) {
-        var index = state.allTodos.findIndex(item => item.title === todo.title)
+        let index = state.allTodos.findIndex(item => item.id == todo.id)
         state.allTodos[index].isDone = true
     },
 
     removeTodo(state, todo) {
-        var index = state.allTodos.findIndex(item => item.title === todo.title)
+        let index = state.allTodos.findIndex(item => item.id == todo.id)
         state.allTodos.splice(index, 1)
     },
 }

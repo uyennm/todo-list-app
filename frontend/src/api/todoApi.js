@@ -1,26 +1,18 @@
 import api from './commonApi';
 import authHeader from './authHeader';
-
-const convertErrorMessageToDisplay = (errorMessage) => {
-  switch (errorMessage) {
-      case '"title" must be a string':
-          return 'Title is required';
-      default:
-          return errorMessage;
-  }
-}
+import catchError from './../utils/catchError';
 
 export default {
     async getTodos(token) {
       let response;
       try {
         response = await api.get('/todo', { headers: authHeader(token) });
-        return response.data.todos;
-      } catch (error) {
-        if (error.response) {
-          const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
-          return errorMessage;
+        return {
+          success: true,
+          response,
         }
+      } catch (error) {
+        return catchError(error);
       }
     },
 
@@ -33,13 +25,7 @@ export default {
           response
         }
       } catch (error) {
-        if (error.response) {
-          const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
-          return {
-              success: false,
-              errorMessage,
-          };
-        }
+        return catchError(error);
       }      
     },
 
@@ -47,23 +33,23 @@ export default {
       let response;
       try {
         response = await api.patch(`/todo/${todo.id}`, todo, { headers: authHeader(token) });
-        return response.data.todo;
-      } catch (error) {
-        if (error.response) {
-          const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
-          return errorMessage;
+        return {
+          success: true,
+          response,
         }
+      } catch (error) {
+        return catchError(error);
       }
     },
 
     async deleteTodo(todo, token) {
       try {
         await api.delete(`/todo/${todo.id}`, { headers: authHeader(token) });
-      } catch (error) {
-        if (error.response) {
-          const errorMessage = convertErrorMessageToDisplay(error.response.data.message);
-          return errorMessage;
+        return {
+          success: true,
         }
+      } catch (error) {
+        return catchError(error);
       }
     }
 }

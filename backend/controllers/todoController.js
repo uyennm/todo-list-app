@@ -53,6 +53,7 @@ exports.updateTodo = catchAsync(async (req, res, next) => {
     }
 
     const todo = {
+        id: req.params.id,
         title: req.body.title,
         description: req.body.description,
         isDone: req.body.isDone

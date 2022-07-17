@@ -21,6 +21,7 @@ export default {
     data() {
         return {
             todo: {
+                id: null,
                 title: null,
                 description: null,
                 isDone: false,
@@ -30,15 +31,21 @@ export default {
     methods: {
         onSubmit() {
             let newTodo = {
+                id: this.todo.id,
                 title: this.todo.title,
                 description: this.todo.description,
                 isDone: this.todo.isDone
             }
 
-            this.$emit('add-todo', newTodo)
-            this.todo.title = null
-            this.todo.description = null
-            this.todo.isDone = false
+            try {
+                this.$emit('add-todo', newTodo);
+                this.todo.id = null;
+                this.todo.title = null;
+                this.todo.description = null;
+                this.todo.isDone = false;
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 }

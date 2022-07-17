@@ -41,7 +41,8 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('auth/getUser')
+    this.$store.dispatch('auth/getUser');
+    this.$store.dispatch('todos/getNextAvailableId', this.isAuthenticated);
   }
 }
 </script>

@@ -21,5 +21,17 @@ export default {
 
     removeTodos() {
         localStorage.removeItem('todos');
+    },
+
+    initAvailableId() {
+        localStorage.setItem('nextAvailableId', '1');
+    },
+
+    getNextAvailableId() {
+        return JSON.parse(localStorage.getItem('nextAvailableId'));
+    },
+
+    setNextAvailableId(id) {
+        localStorage.setItem('nextAvailableId', JSON.stringify(id));
     }
 }

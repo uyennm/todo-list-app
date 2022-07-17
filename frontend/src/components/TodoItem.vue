@@ -38,11 +38,13 @@
       </button>
     </div>
 
+    <notifications group="alert" position="top right" />
   </div>
-
 </template>
 
 <script>
+import { notifyError } from './../services/notify';
+
 export default {
   data() {
     return {
@@ -57,30 +59,39 @@ export default {
   },
   methods: {
 
-    editTodo(todo) {
+    async editTodo(todo) {
       let data = {
         isAuthenticated: this.isAuthenticated,
         todo
       }
-      this.$store.dispatch('todos/editTodo', data).then(() => {
+      const { success, errorMessage } = await this.$store.dispatch('todos/editTodo', data);
+      if (success) {
         this.unsetHasEditTodo();
-      })
+      } else {
+        notifyError(errorMessage);
+      }
     },
 
-    doneTodo(todo) {
+    async doneTodo(todo) {
       let data = {
         isAuthenticated: this.isAuthenticated,
         todo
       }
-      this.$store.dispatch('todos/doneTodo', data)
+      const { success, errorMessage } = await this.$store.dispatch('todos/doneTodo', data);
+      if (!success) {
+        notifyError(errorMessage);
+      }
     },
 
-    removeTodo(todo) {
+    async removeTodo(todo) {
       let data = {
         isAuthenticated: this.isAuthenticated,
         todo
       }
-      this.$store.dispatch('todos/removeTodo', data)
+      const { success, errorMessage } = await this.$store.dispatch('todos/removeTodo', data);
+      if (!success) {
+        notifyError(errorMessage);
+      }
     },
 
     setHasEditTodo() {

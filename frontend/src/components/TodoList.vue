@@ -10,11 +10,13 @@
 
     </div>
     <div class="w-1/3 h-full bg-grey-darkest"></div>
+    <notifications group="alert" position="top right" />
   </div>
 </template>
   
 <script>
 import TodoItem from './TodoItem.vue';
+import { notifyError } from './../services/notify';
 
 export default {
   props: {
@@ -34,7 +36,10 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('todos/getAllTodos', this.isAuthenticated)
+    const { success, errorMessage } = this.$store.dispatch('todos/getAllTodos', this.isAuthenticated);
+    if (!success) {
+      notifyError(errorMessage);
+    }
   }
 }
 
