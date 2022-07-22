@@ -43,6 +43,12 @@ export default {
   created() {
     this.$store.dispatch('auth/getUser');
     this.$store.dispatch('todos/getNextAvailableId', this.isAuthenticated);
+    this.$router.beforeEach((to, from, next) => {
+      if ((to.name === 'login' || to.name === 'signup') && this.isAuthenticated) {
+        next({ name: 'home' });
+      }
+      else next()
+    });
   }
 }
 </script>

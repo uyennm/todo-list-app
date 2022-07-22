@@ -28,6 +28,11 @@ export default {
             }
         }
     },
+    computed: {
+        isAuthenticated() {
+            return this.$store.getters['auth/isAuthenticated']
+        },
+    },
     methods: {
         async login() {
             const {success, errorMessage } = await this.$store.dispatch('auth/login', this.user);
@@ -38,6 +43,11 @@ export default {
             } else {
                 notifyError(errorMessage)
             }
+        }
+    },
+    created() {
+        if (this.isAuthenticated) {
+            this.$router.push('/');
         }
     }
 }
