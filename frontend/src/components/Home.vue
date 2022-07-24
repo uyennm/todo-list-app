@@ -1,12 +1,10 @@
 <template>
   <div id="home">
+    <AppHeader />
     <TodoList :isDoneList="false" />
     <TodoForm @add-todo="addNewTodo" />
     <TodoList :isDoneList="true" />
-    <notifications
-        group="alert"
-        position="top right"
-    />
+    <notifications group="alert" position="top right" />
   </div>
 </template>
 
@@ -14,10 +12,11 @@
 import { notifyError } from './../services/notify'
 import TodoList from './TodoList.vue'
 import TodoForm from './TodoForm.vue'
+import AppHeader from './AppHeader.vue'
 
 export default {
   name: 'app',
-  components: { TodoList, TodoForm },
+  components: { TodoList, TodoForm, AppHeader },
   methods: {
     async addNewTodo(todo) {
       let newTodo = {

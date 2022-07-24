@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './components/App.vue'
 import store from './store'
 import '../src/stylesheets/tailwind.css'
-import { router } from './router'
+import router from './router'
 import Notifications from 'vue-notification';
 
 import { library } from '@fortawesome/fontawesome-svg-core'

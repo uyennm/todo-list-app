@@ -20,28 +20,41 @@ const actions = {
     },
 
     async login({ commit }, user) {
-        const { currUser, success, errorMessage } = await authApi.login(user);
+        const { response, success, errorMessage } = await authApi.login(user);
         if (success) {
+            const currUser = {
+                username: response.data.user.username,
+                token: response.data.token,
+            }
+
+            if (response.data.token) {
+                localStorageService.setUser(currUser);
+            }
+
             commit('loginSuccess', currUser);
-        }
-        else {
-            commit('loginFailure');
         }
         return { success, errorMessage } 
     },
 
     logout({ commit }) {
-        authApi.logout();
+        localStorageService.removeTodos();
+        localStorageService.removeUser();
         commit('logout');
     },
 
     async signup({ commit }, user) {
-        const { currUser, success, errorMessage } = await authApi.signup(user);
+        const { response, success, errorMessage } = await authApi.signup(user);
         if (success) {
+            const currUser = {
+                username: response.data.user.username,
+                token: response.data.token,
+            }
+    
+            if (response.data.token) {
+                localStorageService.setUser(currUser);
+            }
+
             commit('signupSuccess', currUser);
-        }
-        else {
-            commit('signupFailure');
         }
         return { success, errorMessage } 
     },
@@ -59,11 +72,6 @@ const mutations = {
         state.user = currUser;
     },
 
-    loginFailure(state) {
-        state.user.username = null;
-        state.user.token = null;
-    },
-
     logout(state) {
         state.user.username = null;
         state.user.token = null;
@@ -71,11 +79,6 @@ const mutations = {
 
     signupSuccess(state, currUser) {
         state.user = currUser;
-    },
-
-    signupFailure(state) {
-        state.user.username = null;
-        state.user.token = null;
     },
 }
 

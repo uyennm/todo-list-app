@@ -156,8 +156,9 @@ const mutations = {
     },
 
     removeTodo(state, todo) {
-        let index = state.allTodos.findIndex(item => item.id == todo.id)
-        state.allTodos.splice(index, 1)
+        // let index = state.allTodos.findIndex(item => item.id == todo.id)
+        // state.allTodos.splice(index, 1)
+        state.allTodos = state.allTodos.filter(item => item.id !== todo.id)
     },
 }
 
